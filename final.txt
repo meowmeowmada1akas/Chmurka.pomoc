@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chmurka</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      transition: background-color 0.3s ease;
+    }
+    header {
+      background-color: #f9f5f0; /* beżowe tło */
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    #color-picker {
+      margin-top: 10px;
+    }
+    #color-picker input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border: none;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    main {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>☁️•Free space•☁️</h1>
+  <div id="color-picker">
+    <input type="color" value="#ffffff" title="Wybierz kolor tła" />
+  </div>
+</header>
+
+<main>
+  <h2>☁️•Free space•☁️</h2>
+  <p>Witaj! Tu nikt nie ma prawa cię oceniać i krytykować <3 </p>
+
+  <!-- CAŁA RESZTA ZOSTAJE TAK, JAK BYŁO — TWÓJ KOD Z CHATEM, WSPARCIEM, STREFĄ EMOCJI, ETC. -->
+</main>
+
+<script>
+  // Działa tylko jeden główny color picker
+  const colorInput = document.querySelector('#color-picker input[type="color"]');
+  colorInput.addEventListener('input', (e) => {
+    document.body.style.backgroundColor = e.target.value;
+  });
+</script>
+
+</body>
+</html>
+
+<section id="support-words" style="margin-top:40px;">
+  <h2>Słowa Wsparcia</h2>
+  <p id="support-text" style="font-style: italic; font-size: 1.2em; margin-bottom: 15px;">
+    Kliknij poniżej, aby otrzymać słowo wsparcia!
+  </p>
+  <button id="new-support-btn" style="padding: 10px 20px; font-size: 1em; cursor: pointer;">
+    Losuj słowo wsparcia
+  </button>
+</section>
+
+<script>
+  const supportWords = [
+    "Jesteś ważny/a i zasługujesz na miłość.",
+    "Nie jesteś sam/a, pamiętaj o tym.",
+    "Każdy dzień to nowa szansa na lepsze jutro.",
+    "Twoje uczucia są ważne i prawdziwe.",
+    "Masz w sobie siłę, której czasem nie dostrzegasz.",
+    "Świat potrzebuje właśnie Ciebie takim, jakim jesteś.",
+    "Zasługujesz na wsparcie i zrozumienie.",
+    "Małe kroki też prowadzą do wielkich zmian.",
+    "Nie bój się prosić o pomoc — to oznaka odwagi.",
+    "Twoja historia ma sens i jest ważna.",
+    "Warto sięgać po pomoc."
+  ];
+
+  const supportTextEl = document.getElementById('support-text');
+  const newSupportBtn = document.getElementById('new-support-btn');
+
+  newSupportBtn.addEventListener('click', () => {
+    const randomIndex = Math.floor(Math.random() * supportWords.length);
+    supportTextEl.textContent = supportWords[randomIndex];
+  });
+</script>
+
+
+<section id="chat-section" style="margin-top: 50px;">
+  <h2>Porozmawiaj</h2>
+  <div id="chat-box" style="border: 1px solid #ccc; height: 200px; overflow-y: auto; padding: 10px; background: #f9f5f0; border-radius: 5px; margin-bottom: 10px;">
+    <!-- Wiadomości będą tutaj -->
+  </div>
+  <form id="chat-form">
+    <input type="text" id="chat-input" placeholder="Napisz wiadomość..." style="width: 80%; padding: 8px;" required />
+    <button type="submit" style="padding: 8px 15px;">Wyślij</button>
+  </form>
+</section>
+
+<script>
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+  const chatBox = document.getElementById('chat-box');
+
+  chatForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = chatInput.value.trim();
+    if (msg === "") return;
+
+    const msgElem = document.createElement('div');
+    msgElem.textContent = msg;
+    msgElem.style.marginBottom = "8px";
+    msgElem.style.padding = "6px";
+    msgElem.style.backgroundColor = "#fff";
+    msgElem.style.borderRadius = "4px";
+    msgElem.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+
+    chatBox.appendChild(msgElem);
+    chatBox.scrollTop = chatBox.scrollHeight; // scroll na dół
+    chatInput.value = "";
+  });
+</script>
+
+<section id="emotions-section" style="margin-top: 50px;">
+  <h2>Strefa emocji</h2>
+  <form id="emotion-form">
+    <textarea id="emotion-input" placeholder="Podziel się swoimi myślami..." rows="3" style="width: 100%; padding: 10px;" required></textarea>
+    <button type="submit" style="margin-top: 10px; padding: 8px 15px;">Dodaj myśl</button>
+  </form>
+  <div id="emotions-list" style="margin-top: 20px; background: #f9f5f0; padding: 10px; border-radius: 5px; min-height: 150px;">
+    <!-- Tutaj będą pojawiać się myśli -->
+  </div>
+</section>
+
+<script>
+  const emotionForm = document.getElementById('emotion-form');
+  const emotionInput = document.getElementById('emotion-input');
+  const emotionsList = document.getElementById('emotions-list');
+
+  // Funkcja do wyświetlania myśli, filtrując te starsze niż 24h
+  function displayEmotions() {
+    emotionsList.innerHTML = '';
+    const emotions = JSON.parse(localStorage.getItem('emotions') || '[]');
+    const now = Date.now();
+
+    const freshEmotions = emotions.filter(e => now - e.timestamp < 24 * 60 * 60 * 1000);
+    localStorage.setItem('emotions', JSON.stringify(freshEmotions));
+
+    if (freshEmotions.length === 0) {
+      emotionsList.innerHTML = '<p>Brak aktualnych myśli.</p>';
+      return;
+    }
+
+    freshEmotions.forEach(e => {
+      const div = document.createElement('div');
+      div.textContent = e.text;
+      div.style.padding = '8px';
+      div.style.marginBottom = '8px';
+      div.style.backgroundColor = '#fff';
+      div.style.borderRadius = '5px';
+      div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+      emotionsList.appendChild(div);
+    });
+  }
+
+  emotionForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = emotionInput.value.trim();
+    if (!text) return;
+
+    const emotions = JSON.parse(localStorage.getItem('emotions') || '[]');
+    emotions.push({ text, timestamp: Date.now() });
+    localStorage.setItem('emotions', JSON.stringify(emotions));
+    emotionInput.value = '';
+    displayEmotions();
+  });
+
+  // Wyświetl przy załadowaniu
+  displayEmotions();
+</script>
+
+
+
+
+</script>
+
+<section id="share-section" style="margin-top: 50px;">
+  <h2>Podziel się</h2>
+  <form id="share-form">
+    <textarea id="share-input" placeholder="Napisz swoją historię lub myśl..." rows="4" style="width: 100%; padding: 10px;" required></textarea>
+    <button type="submit" style="margin-top: 10px; padding: 8px 15px;">Dodaj wpis</button>
+  </form>
+  <div id="share-list" style="margin-top: 20px; background: #f9f5f0; padding: 10px; border-radius: 5px; min-height: 150px;">
+    <!-- Tutaj pojawią się wpisy -->
+  </div>
+</section>
+
+<script>
+  const shareForm = document.getElementById('share-form');
+  const shareInput = document.getElementById('share-input');
+  const shareList = document.getElementById('share-list');
+
+  function displayShares() {
+    shareList.innerHTML = '';
+    const shares = JSON.parse(localStorage.getItem('shares') || '[]');
+
+    if (shares.length === 0) {
+      shareList.innerHTML = '<p>Brak wpisów. Bądź pierwszy/a, który/a się podzieli!</p>';
+      return;
+    }
+
+    shares.forEach((entry, index) => {
+      const div = document.createElement('div');
+      div.textContent = entry;
+      div.style.padding = '8px';
+      div.style.marginBottom = '10px';
+      div.style.backgroundColor = '#fff';
+      div.style.borderRadius = '5px';
+      div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+      shareList.appendChild(div);
+    });
+  }
+
+  shareForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = shareInput.value.trim();
+    if (!text) return;
+
+    const shares = JSON.parse(localStorage.getItem('shares') || '[]');
+    shares.push(text);
+    localStorage.setItem('shares', JSON.stringify(shares));
+    shareInput.value = '';
+    displayShares();
+  });
+
+  // Wyświetl wpisy przy załadowaniu
+  displayShares();
+</script>
+
+<section id="support-numbers" style="margin-top: 50px;">
+  <h2>Numery wsparcia</h2>
+  <ul style="list-style: none; padding: 0;">
+    <li style="margin-bottom: 10px;">
+      <strong>Telefon Zaufania dla Dzieci i Młodzieży:</strong> <a href="tel:116111">116 111</a>
+    </li>
+    <li style="margin-bottom: 10px;">
+      <strong>Telefon dla Osób Dorosłych w Kryzysie:</strong> <a href="tel:116123">116 123</a>
+    </li>
+    <li style="margin-bottom: 10px;">
+      <strong>Centrum Wsparcia:</strong> <a href="tel:800123456">800 123 456</a>
+    </li>
+    <li style="margin-bottom: 10px;">
+      <strong>Pomoc Psychologiczna Online:</strong> <a href="https://www.wsparcieonline.pl" target="_blank" rel="noopener noreferrer">wsparcieonline.pl</a>
+    </li>
+  </ul>
+</section>
+
+<section id="about-me" style="margin-top: 50px;">
+  <h2>O mnie</h2>
+  <div style="background: #f9f5f0; padding: 15px; border-radius: 5px; max-height: 400px; overflow-y: auto;">
+    <p>Mam na imię Lena. Urodziłam się w 2010 roku. Nie wiem, kiedy to czytasz, ale chcę Ci coś o sobie opowiedzieć.</p>
+
+    <p>Od dziecka zmagam się z wieloma trudnościami. Po rozwodzie moich rodziców rodzina ze strony taty zaczęła mówić kłamstwa o mojej mamie i uczyła mnie złych zachowań tylko dlatego, że moja mama nie chciała być z moim tatą.</p>
+
+    <p>Już przy moich narodzinach były komplikacje. Mama była bardzo drobna i lekarze nie zgodzili się na cesarskie cięcie, mimo że było to ryzykowne. Tata wtedy jej nie wspierał, ale nie mam do niego żalu – to przeszłość.</p>
+
+    <p>Jako dziecko często kłamałam. Nie wiem dlaczego, choć może teraz już rozumiem. Chodziliśmy do różnych psychologów, ale nikt nie zauważył prawdziwych problemów, które wyszły na jaw dopiero po latach.</p>
+
+    <p>Gdy miałam około 11 lat, poszłam z kolegą zwiedzić bunkier. Była z tego niezła szopka, mama zabrała mnie wtedy do prywatnego psychologa. Okazało się, że jestem w spektrum autyzmu — powiedziano mi, że mam Aspergera, choć dziś tego terminu już się nie używa.</p>
+
+    <p>Moje życie bardzo się wtedy zmieniło. Zrozumiałam, że mam gorsze dni, choć nie sądziłam, że to depresja. Mimo trudności, dziś potrafię o tym mówić. W przeszłości samookaleczałam się, teraz już tego nie robię, ale czasem mam takie myśli. To, że ktoś mnie potrzebuje w dobrym stanie, daje mi motywację, by być silną i nadzieją dla innych.</p>
+
+    <p>Nikt nie zdaje sobie sprawy, jak małe problemy potrafią narastać i tworzyć wielkie trudności. To jak z papierkiem po batoniku — jeden malutki śmieć może w końcu stworzyć śmietnik. Moja babcia zgłosiła moją mamę do MOPSu, bo nie akceptowała tego, że jestem autystyczna. Ojciec i jego rodzina są homofobami i rasistami, ale ja się od nich odcięłam. Mam kontakt tylko z tatą, na razie.</p>
+
+    <p>Chmurkę postanowiłam stworzyć dla wszystkich, którzy potrzebują pomocy, ale boją się jej szukać — niezależnie od wieku. Każdy zasługuje na wsparcie. Tik tok - @meowmeowmada1akas </p>
+  </div>
+</section>
+
+
